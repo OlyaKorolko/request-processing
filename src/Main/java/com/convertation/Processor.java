@@ -124,7 +124,7 @@ public class Processor {
                     try {
                         List<StructureHolder> listOfSh =
                                 searchByEmployees(holders, Long.parseLong(emIn[0]), Long.parseLong(emIn[1]));
-                        logger.writeRequestDataToLogFile(DATE, Arrays.toString(emIn), listOfSh.size());
+                        logger.writeRequestDataToLogFile(EMPLOYEES, Arrays.toString(emIn), listOfSh.size());
                         for (StructureHolder s : listOfSh) {
                             out.write(s.toString());
                         }
