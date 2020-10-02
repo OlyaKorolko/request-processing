@@ -44,9 +44,9 @@ public class LoggerToFile {
                 break;
             }
             case 5: {
-                String[] in = input.split(" ");
-                LOGGER.fine("Find companies by employees number | number: " + Integer.parseInt(in[0]) +
-                        Integer.parseInt(in[1]) + ", companies found: " + result + "\n");
+                String[] in = input.subSequence(1, input.length() - 1).toString().split(", ");
+                LOGGER.fine("Find companies by employees number | number: " + "[" + Long.parseLong(in[0]) +
+                        "," + Long.parseLong(in[1]) + "]" + ", companies found: " + result + "\n");
                 break;
             }
             case 6: {
