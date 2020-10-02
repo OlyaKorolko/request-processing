@@ -1,0 +1,33 @@
+Oct 02, 2020 6:23:33 PM com.convertation.LoggerToFile <init>
+FINE: REQUEST HANDLING START
+
+Oct 02, 2020 6:23:43 PM com.convertation.LoggerToFile writeRequestDataToLogFile
+FINE: Find a company by short name | short name: amazon, companies found: 1
+
+Oct 02, 2020 6:24:01 PM com.convertation.LoggerToFile writeRequestDataToLogFile
+FINE: Find companies by branch of work | branch: trade, companies found: 1
+
+Oct 02, 2020 6:24:17 PM com.convertation.LoggerToFile writeRequestDataToLogFile
+FINE: Find companies by type of work | type: social network, companies found: 1
+
+Oct 02, 2020 6:24:58 PM com.convertation.LoggerToFile writeRequestDataToLogFile
+FINE: Find companies by foundation date | date: [2005-10-09,2020-10-02], companies found: 1
+
+Oct 02, 2020 6:25:30 PM com.convertation.LoggerToFile writeRequestDataToLogFile
+FINE: Find companies by foundation date | date: [111111,478560234], companies found: 4
+
+Oct 02, 2020 6:25:33 PM com.convertation.LoggerToFile writeRequestDataToLogFile
+FINE: REQUEST HANDLING FINISHED SUCCESSFULLY.
+
+Oct 02, 2020 6:31:18 PM com.convertation.LoggerToFile <init>
+FINE: REQUEST HANDLING START
+
+Oct 02, 2020 6:31:50 PM com.convertation.LoggerToFile writeRequestDataToLogFile
+FINE: Find companies by branch of work | branch: technology, companies found: 2
+
+Oct 02, 2020 6:32:16 PM com.convertation.LoggerToFile writeRequestDataToLogFile
+FINE: Find companies by foundation date | date: [0,100], companies found: 0
+
+Oct 02, 2020 6:32:18 PM com.convertation.LoggerToFile writeRequestDataToLogFile
+FINE: REQUEST HANDLING FINISHED SUCCESSFULLY.
+
