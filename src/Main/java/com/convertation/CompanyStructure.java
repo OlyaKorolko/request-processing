@@ -3,13 +3,13 @@ package com.convertation;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class StructureHolder {
+public class CompanyStructure {
     private final String name;
     private final String shortName;
     private final LocalDate dateOfActualization;
     private final String address;
     private final LocalDate dateOfFoundation;
-    private final long numberOfEmployees;
+    private final Integer numberOfEmployees;
     private final String auditor;
     private final String phoneNumber;
     private final String email;
@@ -17,9 +17,9 @@ public class StructureHolder {
     private final String typeOfWork;
     private final String websiteAddress;
 
-    public StructureHolder(String name, String shortName, LocalDate dateOfActualization, String address,
-                           LocalDate dateOfFoundation, long numberOfEmployees, String auditor, String phoneNumber,
-                           String email, String branchOfWork, String typeOfWork, String websiteAddress) {
+    public CompanyStructure(String name, String shortName, LocalDate dateOfActualization, String address,
+                            LocalDate dateOfFoundation, Integer numberOfEmployees, String auditor, String phoneNumber,
+                            String email, String branchOfWork, String typeOfWork, String websiteAddress) {
         this.name = name;
         this.shortName = shortName;
         this.dateOfActualization = dateOfActualization;
@@ -38,11 +38,15 @@ public class StructureHolder {
         return shortName;
     }
 
+    public String getShortNameToLowerCase() {
+        return shortName.toLowerCase();
+    }
+
     public LocalDate getDateOfActualization() {
         return dateOfActualization;
     }
 
-    public long getNumberOfEmployees() {
+    public Integer getNumberOfEmployees() {
         return numberOfEmployees;
     }
 
@@ -58,7 +62,7 @@ public class StructureHolder {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        StructureHolder that = (StructureHolder) o;
+        CompanyStructure that = (CompanyStructure) o;
         return numberOfEmployees == that.numberOfEmployees &&
                 Objects.equals(name, that.name) &&
                 Objects.equals(shortName, that.shortName) &&
