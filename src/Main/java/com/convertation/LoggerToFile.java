@@ -25,40 +25,42 @@ public class LoggerToFile {
         }
     }
 
-    public void writeRequestDataToLogFile(Types requestType, String requestInput, int result) {
+    public void writeRequestDataToLogFile(int requestType, String requestInput, int result) {
         switch (requestType) {
-            case SHORT_NAME: {
+            case 1: {
                 LOGGER.fine("Find a company by short name | short name: " +
                         requestInput + ", companies found: " + result + "\n");
                 break;
             }
-            case BRANCH_OF_WORK: {
+            case 2: {
                 LOGGER.fine("Find companies by branch of work | branch: " +
                         requestInput + ", companies found: " + result + "\n");
                 break;
             }
-            case TYPE_OF_WORK: {
+            case 3: {
                 LOGGER.fine("Find companies by type of work | type: " +
                         requestInput + ", companies found: " + result + "\n");
                 break;
             }
-            case DATE: {
+            case 4: {
                 String[] in = requestInput.split(" ");
                 LOGGER.fine("Find companies by foundation date | date: " +
                         in[0] + in[1] + ", companies found: " + result + "\n");
                 break;
             }
-            case EMPLOYEES: {
+            case 5: {
                 String[] in = requestInput.subSequence(1, requestInput.length() - 1).toString().split(", ");
                 LOGGER.fine("Find companies by employees number | number: " + "[" + Integer.parseInt(in[0]) +
                         "," + Integer.parseInt(in[1]) + "]" + ", companies found: " + result + "\n");
                 break;
             }
-            case EXIT: {
+            case 6: {
                 LOGGER.fine(requestInput + "\n");
+                break;
             }
             default: {
                 LOGGER.fine("Invalid request.");
+                break;
             }
         }
     }
