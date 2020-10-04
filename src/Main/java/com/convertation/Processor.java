@@ -2,6 +2,7 @@ package com.convertation;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.HashMap;
@@ -15,11 +16,9 @@ import java.util.stream.Collectors;
 
 public class Processor {
     public static LoggerToFile logger;
-    private Scanner scan;
     private Map<String, CompanyStructure> holders;
 
-    Processor(Scanner scan, File logFile) throws CustomException {
-        this.scan = scan;
+    Processor(File logFile) throws CustomException {
         holders = new HashMap<>();
         logger = new LoggerToFile(logFile, Processor.class.getName());
     }
@@ -32,20 +31,31 @@ public class Processor {
         return holders;
     }
 
-    public static File createFile(String fileName) {
+    public static File createFile(String fileName) throws CustomException {
+      try {
         return new File(System.getProperty("user.dir") + "\\src\\" + fileName);
+      } catch (Exception e) {
+        throw new CustomException("File creation failed.");
+      }
     }
 
-    public Map<String, CompanyStructure> deserializeToListOfCompanyStructures(BufferedReader in)
-            throws ArrayIndexOutOfBoundsException {
-        return in.lines().map(line -> {
+  public Map<String, CompanyStructure> deserializeToListOfCompanyStructures(BufferedReader in)
+      throws CustomException {
+    try {
+      return in
+          .lines()
+          .map(line -> {
             String[] x = setPattern().split(line);
             return new CompanyStructure(x[0], x[1], LocalDate.parse(x[2]), x[3], LocalDate.parse(x[4]),
-                    Integer.parseInt(x[5]), x[6], x[7], x[8], x[9], x[10], x[11]);
-        })
-                .filter(s -> !s.getShortName().isEmpty() || !s.getBranchOfWork().isEmpty() || !s.getTypeOfWork().isEmpty())
-                .collect(Collectors.toMap(CompanyStructure::getShortNameToLowerCase, Function.identity()));
+                Integer.parseInt(x[5]), x[6], x[7], x[8], x[9], x[10], x[11]);
+          })
+          .filter(s -> !s.getShortName().isEmpty() || !s.getBranchOfWork().isEmpty() ||
+              !s.getTypeOfWork().isEmpty())
+          .collect(Collectors.toMap(CompanyStructure::getShortNameToLowerCase, Function.identity()));
+    } catch (Exception ex) {
+      throw new CustomException("Parsing file failed.");
     }
+  }
 
     private Pattern setPattern() {
         return Pattern.compile(",");
