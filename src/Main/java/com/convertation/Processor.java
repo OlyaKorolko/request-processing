@@ -7,7 +7,6 @@ import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -15,11 +14,9 @@ import java.util.stream.Collectors;
 
 public class Processor {
     public static LoggerToFile logger;
-    private Scanner scan;
     private Map<String, CompanyStructure> holders;
 
-    Processor(Scanner scan, File logFile) throws CustomException {
-        this.scan = scan;
+    Processor(File logFile) throws CustomException {
         holders = new HashMap<>();
         logger = new LoggerToFile(logFile, Processor.class.getName());
     }
