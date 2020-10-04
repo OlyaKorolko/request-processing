@@ -9,7 +9,7 @@ public class CompanyStructure {
     private final LocalDate dateOfActualization;
     private final String address;
     private final LocalDate dateOfFoundation;
-    private final Integer numberOfEmployees;
+    private final int numberOfEmployees;
     private final String auditor;
     private final String phoneNumber;
     private final String email;
@@ -18,7 +18,7 @@ public class CompanyStructure {
     private final String websiteAddress;
 
     public CompanyStructure(String name, String shortName, LocalDate dateOfActualization, String address,
-                            LocalDate dateOfFoundation, Integer numberOfEmployees, String auditor, String phoneNumber,
+                            LocalDate dateOfFoundation, int numberOfEmployees, String auditor, String phoneNumber,
                             String email, String branchOfWork, String typeOfWork, String websiteAddress) {
         this.name = name;
         this.shortName = shortName;
@@ -63,7 +63,7 @@ public class CompanyStructure {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CompanyStructure that = (CompanyStructure) o;
-        return numberOfEmployees.equals(that.numberOfEmployees) &&
+        return numberOfEmployees == that.numberOfEmployees &&
                 Objects.equals(name, that.name) &&
                 Objects.equals(shortName, that.shortName) &&
                 Objects.equals(dateOfActualization, that.dateOfActualization) &&
