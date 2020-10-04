@@ -13,7 +13,7 @@ public class Main {
         try (Scanner scan = new Scanner(System.in)) {
             if (args.length >= 3) {
                 File logFile = Processor.createFile(args[0]);
-                Processor processor = new Processor(scan, logFile);
+                Processor processor = new Processor(logFile);
 
                 try (BufferedReader in = new BufferedReader(
                         new FileReader(Processor.createFile(args[1])))) {
@@ -32,12 +32,14 @@ public class Main {
                         do {
                             System.out.println("Enter the number of request: ");
                             input = scan.nextInt();
-                            processRequest(scan, out, processor, input);
-                        } while (input != 6);
+                            processRequest(scan, out, processor, RequestName.values()[input - 1]);
+                        } while (RequestName.values()[input - 1] != RequestName.EXIT);
                     } catch (IOException ex) {
                         processException("Output file is corrupted. Program is terminated");
-                    } catch (InputMismatchException ex) {
+                    } catch (InputMismatchException | NumberFormatException ex) {
                         processException("Request is invalid. Program is terminated");
+                    } catch (DateTimeParseException ex) {
+                        processException("Incorrect date format");
                     }
                 }
             }
@@ -61,96 +63,74 @@ public class Main {
         Processor.logger.writeExceptionToLogFile(s);
     }
 
-    public static void processRequest(Scanner scan, BufferedWriter out, Processor processor, int type)
-            throws InputMismatchException {
-        switch (type) {
-            case 1: {
+    public static void processRequest(Scanner scan, BufferedWriter out, Processor processor, RequestName requestName)
+            throws IOException {
+        switch (requestName) {
+            case SHORT_NAME: {
                 System.out.println("Enter a short name: ");
                 scan.nextLine();
                 String input = scan.nextLine().toLowerCase();
-                try {
-                    CompanyStructure s = processor.searchByShortName(input);
-                    Processor.logger.writeRequestDataToLogFile(1, input, s != null ? 1 : 0);
-                    if (s != null) {
-                        out.write(s.toString());
-                    }
-                    out.write("\n");
-                } catch (IOException ex) {
-                    System.out.println("No field found according to your request");
+                CompanyStructure s = processor.searchByShortName(input);
+                Processor.logger.writeRequestDataToLogFile(RequestName.SHORT_NAME, input, s != null ? 1 : 0);
+                if (s != null) {
+                    out.write(s.toString());
                 }
-                break;
+                out.write("\n");
             }
-            case 2: {
+            break;
+            case BRANCH_OF_WORK: {
                 System.out.println("Branch of work: ");
                 scan.nextLine();
                 String branchOfWork = scan.nextLine();
-                try {
-                    List<CompanyStructure> listOfSh = processor.searchByBranchOrTypeOfWork(branchOfWork, true);
-                    Processor.logger.writeRequestDataToLogFile(2, branchOfWork, listOfSh.size());
-                    for (CompanyStructure s : listOfSh) {
-                        out.write(s.toString());
-                    }
-                    out.write("\n");
-                } catch (IOException ex) {
-                    System.out.println("No field found according to your request");
+                List<CompanyStructure> listOfSh = processor.searchByBranchOrTypeOfWork(branchOfWork, true);
+                Processor.logger.writeRequestDataToLogFile(RequestName.BRANCH_OF_WORK, branchOfWork, listOfSh.size());
+                for (CompanyStructure s : listOfSh) {
+                    out.write(s.toString());
                 }
+                out.write("\n");
                 break;
             }
-            case 3: {
+            case TYPE_OF_WORK: {
                 System.out.println("Type of work: ");
                 scan.nextLine();
                 String typeOfWork = scan.nextLine();
-                try {
-                    List<CompanyStructure> listOfSh = processor.searchByBranchOrTypeOfWork(typeOfWork, false);
-                    Processor.logger.writeRequestDataToLogFile(3, typeOfWork, listOfSh.size());
-                    for (CompanyStructure s : listOfSh) {
-                        out.write(s.toString());
-                    }
-                    out.write("\n");
-                } catch (IOException ex) {
-                    System.out.println("No field found according to your request");
+                List<CompanyStructure> listOfSh = processor.searchByBranchOrTypeOfWork(typeOfWork, false);
+                Processor.logger.writeRequestDataToLogFile(RequestName.TYPE_OF_WORK, typeOfWork, listOfSh.size());
+                for (CompanyStructure s : listOfSh) {
+                    out.write(s.toString());
                 }
+                out.write("\n");
                 break;
             }
-            case 4: {
+            case DATE: {
                 System.out.println("Enter the time boundaries to be searched between:");
                 String[] dateIn = {scan.next(), scan.next()};
-                try {
-                    List<CompanyStructure> listOfSh = processor.searchByDate(
-                            LocalDate.parse(dateIn[0]), LocalDate.parse(dateIn[1]));
-                    Processor.logger.writeRequestDataToLogFile(4, Arrays.toString(dateIn), listOfSh.size());
-                    for (CompanyStructure s : listOfSh) {
-                        out.write(s.toString());
-                    }
-                    out.write("\n");
-                } catch (IOException ex) {
-                    System.out.println("No field found according to your request");
-                } catch (DateTimeParseException ex) {
-                    System.out.println("Incorrect date format");
+                List<CompanyStructure> listOfSh = processor.searchByDate(
+                        LocalDate.parse(dateIn[0]), LocalDate.parse(dateIn[1]));
+                Processor.logger.writeRequestDataToLogFile(
+                        RequestName.DATE, Arrays.toString(dateIn), listOfSh.size());
+                for (CompanyStructure s : listOfSh) {
+                    out.write(s.toString());
                 }
+                out.write("\n");
                 break;
             }
-            case 5: {
+            case EMPLOYEES: {
                 System.out.println("Enter the lower and upper bounds of number of employees: ");
                 String[] emIn = {scan.next(), scan.next()};
-                try {
-                    List<CompanyStructure> listOfSh = processor.searchByEmployees(
-                            Integer.parseInt(emIn[0]), Integer.parseInt(emIn[1]));
-                    Processor.logger.writeRequestDataToLogFile(
-                            5, Arrays.toString(emIn), listOfSh.size());
-                    for (CompanyStructure s : listOfSh) {
-                        out.write(s.toString());
-                    }
-                    out.write("\n");
-                } catch (IOException ex) {
-                    System.out.println("No field found according to your request");
-                } catch (NumberFormatException ex) {
-                    System.out.println("Invalid input.");
+                List<CompanyStructure> listOfSh = processor.searchByEmployees(
+                        Integer.parseInt(emIn[0]), Integer.parseInt(emIn[1]));
+                Processor.logger.writeRequestDataToLogFile(
+                        RequestName.EMPLOYEES, Arrays.toString(emIn), listOfSh.size());
+                for (CompanyStructure s : listOfSh) {
+                    out.write(s.toString());
                 }
+                out.write("\n");
+
                 break;
             }
-            case 6: {
-                Processor.logger.writeRequestDataToLogFile(6,
+            case EXIT: {
+                Processor.logger.writeRequestDataToLogFile(RequestName.EXIT,
                         "REQUEST HANDLING FINISHED SUCCESSFULLY.", 0);
                 break;
             }
