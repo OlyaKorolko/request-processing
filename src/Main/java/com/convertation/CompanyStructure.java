@@ -63,7 +63,7 @@ public class CompanyStructure {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CompanyStructure that = (CompanyStructure) o;
-        return numberOfEmployees == that.numberOfEmployees &&
+        return numberOfEmployees.equals(that.numberOfEmployees) &&
                 Objects.equals(name, that.name) &&
                 Objects.equals(shortName, that.shortName) &&
                 Objects.equals(dateOfActualization, that.dateOfActualization) &&
