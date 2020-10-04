@@ -43,18 +43,22 @@ public class LoggerToFile {
                 break;
             }
             case DATE: {
-                if (requestInput.length() == 2) {
-                    String[] in = requestInput.split(" ");
+                String[] in = requestInput.split(" ");
+                if (in.length == 2) {
                     LOGGER.fine("Find companies by foundation date | date: " +
                             in[0] + in[1] + ", companies found: " + result + "\n");
+                } else {
+                    LOGGER.warning("Unexpected input");
                 }
                 break;
             }
             case EMPLOYEES: {
-                if (requestInput.length() == 2) {
-                    String[] in = requestInput.subSequence(1, requestInput.length() - 1).toString().split(", ");
+                String[] in = requestInput.subSequence(1, requestInput.length() - 1).toString().split(", ");
+                if (in.length == 2) {
                     LOGGER.fine("Find companies by employees number | number: " + "[" + Integer.parseInt(in[0]) +
                             "," + Integer.parseInt(in[1]) + "]" + ", companies found: " + result + "\n");
+                } else {
+                    LOGGER.warning("Unexpected input");
                 }
                 break;
             }
