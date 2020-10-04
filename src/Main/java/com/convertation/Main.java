@@ -18,21 +18,23 @@ public class Main {
                 Processor processor = new Processor(logFile);
                 processor.setHolders(processor.deserializeToListOfCompanyStructures(in));
 
-
                 if (processor.getHolders().size() != 0) {
                     showMenu();
                     int input;
                     do {
                         System.out.println("Enter the number of request: ");
                         input = scan.nextInt();
-                        processRequest(scan, out, processor, RequestName.values()[input - 1]);
-                    } while (RequestName.values()[input - 1] != RequestName.EXIT);
+                        processRequest(scan, out, processor, input);
+                    } while (input != 6);
                 }
-            } catch (CustomException | IOException e) {
+                else {
+                    processException("Input file is empty.");
+                }
+            } catch (CustomException | IOException | InputMismatchException e) {
                 System.out.println(e.getMessage());
             }
         } else {
-            System.out.println("Invalid input.");
+            processException("INVALID INPUT");
         }
     }
 
@@ -51,9 +53,15 @@ public class Main {
         Processor.logger.writeExceptionToLogFile(s);
     }
 
-    public static void processRequest(Scanner scan, BufferedWriter out, Processor processor, RequestName requestName)
+    public static void processRequest(Scanner scan, BufferedWriter out, Processor processor, int requestNum)
             throws InputMismatchException, IOException, CustomException {
-        switch (requestName) {
+        RequestName rName;
+        try {
+            rName = RequestName.values()[requestNum - 1];
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            throw new CustomException("INVALID REQUEST");
+        }
+        switch (rName) {
             case SHORT_NAME: {
                 System.out.println("Enter a short name: ");
                 scan.nextLine();
@@ -103,7 +111,7 @@ public class Main {
                     }
                     out.write("\n");
                 } catch (DateTimeParseException ex) {
-                    throw new CustomException("Incorrect date format.");
+                    throw new CustomException("INVALID DATE FORMAT");
                 }
                 break;
             }
@@ -120,7 +128,7 @@ public class Main {
                     }
                     out.write("\n");
                 } catch (NumberFormatException ex) {
-                    throw new CustomException("Invalid input.");
+                    throw new CustomException("INVALID NUMBER INPUT");
                 }
                 break;
             }
@@ -130,7 +138,7 @@ public class Main {
                 break;
             }
             default: {
-                System.out.println("Invalid request.");
+                processException("INVALID REQUEST");
                 break;
             }
         }
