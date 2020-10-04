@@ -10,41 +10,29 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        try (Scanner scan = new Scanner(System.in)) {
-            if (args.length >= 3) {
+        if (args.length >= 3) {
+            try (Scanner scan = new Scanner(System.in);
+                 BufferedReader in = new BufferedReader(new FileReader(Processor.createFile(args[1])));
+                 BufferedWriter out = new BufferedWriter(new FileWriter(Processor.createFile(args[2])))) {
                 File logFile = Processor.createFile(args[0]);
                 Processor processor = new Processor(logFile);
+                processor.setHolders(processor.deserializeToListOfCompanyStructures(in));
 
-                try (BufferedReader in = new BufferedReader(
-                        new FileReader(Processor.createFile(args[1])))) {
-                    processor.setHolders(processor.deserializeToListOfCompanyStructures(in));
-                } catch (IOException e) {
-                    processException("Input file is corrupted. Program is terminated");
-                } catch (NumberFormatException | DateTimeParseException ex) {
-                    processException("Obligatory fields are empty. Program is terminated");
-                }
 
                 if (processor.getHolders().size() != 0) {
-                    try (BufferedWriter out = new BufferedWriter(
-                            new FileWriter(Processor.createFile(args[2])))) {
-                        showMenu();
-                        int input;
-                        do {
-                            System.out.println("Enter the number of request: ");
-                            input = scan.nextInt();
-                            processRequest(scan, out, processor, RequestName.values()[input - 1]);
-                        } while (RequestName.values()[input - 1] != RequestName.EXIT);
-                    } catch (IOException ex) {
-                        processException("Output file is corrupted. Program is terminated");
-                    } catch (InputMismatchException | NumberFormatException ex) {
-                        processException("Request is invalid. Program is terminated");
-                    } catch (DateTimeParseException ex) {
-                        processException("Incorrect date format");
-                    }
+                    showMenu();
+                    int input;
+                    do {
+                        System.out.println("Enter the number of request: ");
+                        input = scan.nextInt();
+                        processRequest(scan, out, processor, RequestName.values()[input - 1]);
+                    } while (RequestName.values()[input - 1] != RequestName.EXIT);
                 }
+            } catch (CustomException | IOException e) {
+                System.out.println(e.getMessage());
             }
-        } catch (CustomException e) {
-            e.printStackTrace();
+        } else {
+            System.out.println("Invalid input.");
         }
     }
 
@@ -64,7 +52,7 @@ public class Main {
     }
 
     public static void processRequest(Scanner scan, BufferedWriter out, Processor processor, RequestName requestName)
-            throws IOException {
+            throws InputMismatchException, IOException, CustomException {
         switch (requestName) {
             case SHORT_NAME: {
                 System.out.println("Enter a short name: ");
@@ -105,28 +93,35 @@ public class Main {
             case DATE: {
                 System.out.println("Enter the time boundaries to be searched between:");
                 String[] dateIn = {scan.next(), scan.next()};
-                List<CompanyStructure> listOfSh = processor.searchByDate(
-                        LocalDate.parse(dateIn[0]), LocalDate.parse(dateIn[1]));
-                Processor.logger.writeRequestDataToLogFile(
-                        RequestName.DATE, Arrays.toString(dateIn), listOfSh.size());
-                for (CompanyStructure s : listOfSh) {
-                    out.write(s.toString());
+                try {
+                    List<CompanyStructure> listOfSh = processor.searchByDate(
+                            LocalDate.parse(dateIn[0]), LocalDate.parse(dateIn[1]));
+                    Processor.logger.writeRequestDataToLogFile(
+                            RequestName.DATE, Arrays.toString(dateIn), listOfSh.size());
+                    for (CompanyStructure s : listOfSh) {
+                        out.write(s.toString());
+                    }
+                    out.write("\n");
+                } catch (DateTimeParseException ex) {
+                    throw new CustomException("Incorrect date format.");
                 }
-                out.write("\n");
                 break;
             }
             case EMPLOYEES: {
                 System.out.println("Enter the lower and upper bounds of number of employees: ");
                 String[] emIn = {scan.next(), scan.next()};
-                List<CompanyStructure> listOfSh = processor.searchByEmployees(
-                        Integer.parseInt(emIn[0]), Integer.parseInt(emIn[1]));
-                Processor.logger.writeRequestDataToLogFile(
-                        RequestName.EMPLOYEES, Arrays.toString(emIn), listOfSh.size());
-                for (CompanyStructure s : listOfSh) {
-                    out.write(s.toString());
+                try {
+                    List<CompanyStructure> listOfSh = processor.searchByEmployees(
+                            Integer.parseInt(emIn[0]), Integer.parseInt(emIn[1]));
+                    Processor.logger.writeRequestDataToLogFile(
+                            RequestName.EMPLOYEES, Arrays.toString(emIn), listOfSh.size());
+                    for (CompanyStructure s : listOfSh) {
+                        out.write(s.toString());
+                    }
+                    out.write("\n");
+                } catch (NumberFormatException ex) {
+                    throw new CustomException("Invalid input.");
                 }
-                out.write("\n");
-
                 break;
             }
             case EXIT: {
