@@ -26,12 +26,13 @@ public class Main {
                         input = scan.nextInt();
                         processRequest(scan, out, processor, input);
                     } while (input != 6);
-                }
-                else {
+                } else {
                     processException("Input file is empty.");
                 }
-            } catch (CustomException | IOException | InputMismatchException e) {
+            } catch (CustomException | IOException e) {
                 System.out.println(e.getMessage());
+            } catch (InputMismatchException e) {
+                processException("INVALID REQUEST INPUT");
             }
         } else {
             processException("INVALID INPUT");
@@ -55,13 +56,7 @@ public class Main {
 
     public static void processRequest(Scanner scan, BufferedWriter out, Processor processor, int requestNum)
             throws InputMismatchException, IOException, CustomException {
-        RequestName rName;
-        try {
-            rName = RequestName.values()[requestNum - 1];
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            throw new CustomException("INVALID REQUEST");
-        }
-        switch (rName) {
+        switch (RequestName.castFromIntToEnum(requestNum)) {
             case SHORT_NAME: {
                 System.out.println("Enter a short name: ");
                 scan.nextLine();
@@ -138,7 +133,8 @@ public class Main {
                 break;
             }
             default: {
-                processException("INVALID REQUEST");
+                Processor.logger.writeRequestDataToLogFile(RequestName.DEFAULT,
+                        "INVALID REQUEST", 0);
                 break;
             }
         }
