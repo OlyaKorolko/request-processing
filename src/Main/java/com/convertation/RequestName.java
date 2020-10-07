@@ -7,11 +7,21 @@ public enum RequestName {
     TYPE_OF_WORK (3),
     DATE (4),
     EMPLOYEES (5),
-    EXIT (6);
+    EXIT (6),
+    DEFAULT(7);
 
     public int number;
 
     RequestName(int number) {
         this.number = number;
+    }
+
+    public static RequestName castFromIntToEnum(int value) {
+        for (RequestName name : values()) {
+            if (name.number == value) {
+                return name;
+            }
+        }
+        return RequestName.DEFAULT;
     }
 }
