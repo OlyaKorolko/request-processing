@@ -62,12 +62,9 @@ public class LoggerToFile {
                 }
                 break;
             }
-            case EXIT: {
-                LOGGER.fine(requestInput + "\n");
-                break;
-            }
+            case EXIT:
             default: {
-                LOGGER.fine("Invalid request.");
+                LOGGER.fine(requestInput + "\n");
                 break;
             }
         }
